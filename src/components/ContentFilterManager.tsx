@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 import { ContentFilter } from '../types';
-import { 
-  Filter, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Toggle, 
-  Search,
-  AlertTriangle,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
+import { Filter, Plus, Edit, Trash2, ToggleLeft as Toggle, Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 
 const ContentFilterManager: React.FC = () => {
   const [filters, setFilters] = useState<ContentFilter[]>([
