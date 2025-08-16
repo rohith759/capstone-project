@@ -1,15 +1,19 @@
 import React, { useState, useMemo } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import RealTimeEmailFeed from '../components/RealTimeEmailFeed';
 import { Message, FilterState } from '../types';
 import { mockMessages } from '../data/mockData';
 import MessageList from '../components/MessageList';
 import MessageDetail from '../components/MessageDetail';
 import FilterPanel from '../components/FilterPanel';
-import { RefreshCw, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { RefreshCw, CheckCircle2, XCircle, AlertTriangle, Zap } from 'lucide-react';
 
 const InboxPage: React.FC = () => {
+  const { auth } = useAuth();
   const [messages] = useState<Message[]>(mockMessages);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showRealTimeFeed, setShowRealTimeFeed] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     status: [],
     search: '',
@@ -142,12 +146,40 @@ const InboxPage: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1 flex space-x-6 min-h-0">
           {/* Sidebar - Filters */}
-          <div className="w-72 flex-shrink-0">
+          <div className="w-72 flex-shrink-0 space-y-6">
             <FilterPanel 
               filters={filters}
               onFiltersChange={setFilters}
               messageStats={messageStats}
             />
+            
+            {/* Real-time Feed Toggle */}
+            {auth.user?.preferences.notifications.realTime && (
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Zap className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-medium text-gray-900">Live Feed</span>
+                  </div>
+                  <button
+                    onClick={() => setShowRealTimeFeed(!showRealTimeFeed)}
+                    className={`text-xs px-2 py-1 rounded ${
+                      showRealTimeFeed 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {showRealTimeFeed ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                
+                {showRealTimeFeed && (
+                  <div className="max-h-48 overflow-auto">
+                    <RealTimeEmailFeed />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Messages */}

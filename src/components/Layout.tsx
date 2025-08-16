@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { 
   Mail, 
   Shield, 
@@ -9,7 +10,9 @@ import {
   Menu, 
   X,
   Bell,
-  User
+  User,
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -21,11 +24,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, unreadAlerts = 0 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { auth, logout } = useAuth();
 
   const navigation = [
     { id: 'inbox', name: 'Inbox', icon: Mail, badge: undefined },
     { id: 'alerts', name: 'Alerts', icon: AlertTriangle, badge: unreadAlerts > 0 ? unreadAlerts : undefined },
     { id: 'settings', name: 'Settings', icon: Settings, badge: undefined },
+    { id: 'account', name: 'Account', icon: User, badge: undefined },
     { id: 'admin', name: 'Admin', icon: Users, badge: undefined },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, badge: undefined },
   ];
@@ -129,9 +135,56 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, un
                   </span>
                 )}
               </button>
-              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                <User className="w-5 h-5 text-gray-600" />
-              </button>
+              
+              {/* User Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <img
+                    src={auth.user?.avatar}
+                    alt={auth.user?.name}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium text-gray-900">{auth.user?.name}</p>
+                    <p className="text-xs text-gray-500">{auth.user?.role}</p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </button>
+                
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="p-3 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">{auth.user?.name}</p>
+                      <p className="text-xs text-gray-500">{auth.user?.email}</p>
+                    </div>
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          onPageChange('account');
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <User className="w-4 h-4" />
+                        <span>Account Settings</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>

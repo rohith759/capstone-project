@@ -94,3 +94,67 @@ export interface MetricData {
   change: number;
   trend: 'up' | 'down' | 'stable';
 }
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role: 'user' | 'analyst' | 'admin';
+  tenantId: string;
+  tenantName: string;
+  mfaEnabled: boolean;
+  lastLoginAt: string;
+  createdAt: string;
+  avatar?: string;
+  preferences: UserPreferences;
+}
+
+export interface UserPreferences {
+  theme: 'light' | 'dark' | 'system';
+  notifications: {
+    email: boolean;
+    push: boolean;
+    realTime: boolean;
+  };
+  language: string;
+  timezone: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface AuthState {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface RealTimeEmail {
+  id: string;
+  messageId: string;
+  fromAddress: string;
+  fromDisplay: string;
+  toAddress: string;
+  subject: string;
+  receivedAt: string;
+  mlScore: number;
+  status: 'processing' | 'allowed' | 'quarantined' | 'blocked';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  threatType?: string;
+}
+
+export interface ContentFilter {
+  id: string;
+  name: string;
+  type: 'keyword' | 'domain' | 'attachment' | 'url' | 'header';
+  pattern: string;
+  action: 'allow' | 'quarantine' | 'block';
+  enabled: boolean;
+  priority: number;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}

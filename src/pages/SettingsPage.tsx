@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ContentFilterManager from '../components/ContentFilterManager';
+import RealTimeEmailFeed from '../components/RealTimeEmailFeed';
 import { Policy } from '../types';
 import { mockPolicy } from '../data/mockData';
 import { 
@@ -9,12 +11,15 @@ import {
   Users, 
   Lock,
   Save,
-  RotateCcw
+  RotateCcw,
+  Filter,
+  Activity
 } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const [policy, setPolicy] = useState<Policy>(mockPolicy);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [activeTab, setActiveTab] = useState<'policy' | 'filters' | 'realtime'>('policy');
 
   const handlePolicyChange = (field: keyof Policy, value: any) => {
     setPolicy(prev => ({ ...prev, [field]: value }));
@@ -132,7 +137,8 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-3">
+          {activeTab === 'policy' && (
+            <div className="flex items-center space-x-3">
             {unsavedChanges && (
               <button
                 onClick={handleReset}
@@ -150,9 +156,35 @@ const SettingsPage: React.FC = () => {
               <Save className="w-4 h-4 inline mr-2" />
               Save Changes
             </button>
-          </div>
+            </div>
+          )}
         </div>
 
+        {/* Tabs */}
+        <div className="flex space-x-2 border-b border-gray-200">
+          {[
+            { key: 'policy', label: 'Security Policy', icon: Shield },
+            { key: 'filters', label: 'Content Filters', icon: Filter },
+            { key: 'realtime', label: 'Real-time Monitoring', icon: Activity },
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === tab.key
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'policy' && (
+          <>
         {unsavedChanges && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
@@ -328,6 +360,62 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
         </SettingCard>
+          </>
+        )}
+
+        {activeTab === 'filters' && (
+          <ContentFilterManager />
+        )}
+
+        {activeTab === 'realtime' && (
+          <div className="space-y-6">
+            <RealTimeEmailFeed />
+            
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Activity className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Real-time Settings</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Live Email Monitoring</p>
+                    <p className="text-sm text-gray-600">Show incoming emails in real-time</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Threat Notifications</p>
+                    <p className="text-sm text-gray-600">Instant alerts for high-risk emails</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Audio Alerts</p>
+                    <p className="text-sm text-gray-600">Play sound for critical threats</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
