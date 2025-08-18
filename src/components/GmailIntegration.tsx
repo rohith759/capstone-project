@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GmailConnection, EmailThreat, SafetyCheck } from '../types';
-import { 
-  Mail, 
-  Shield, 
-  AlertTriangle, 
-  CheckCircle, 
-  XCircle, 
-  RefreshCw,
-  Link,
-  Unlink,
-  Eye,
-  Block,
-  Clock,
-  TrendingUp,
-  Activity
-} from 'lucide-react';
+import { Mail, Shield, AlertTriangle, CheckCircle, XCircle, RefreshCw, Link, Unlink, Eye, Blocks as Block, Clock, TrendingUp, Activity } from 'lucide-react';
 
 const GmailIntegration: React.FC = () => {
   const [connection, setConnection] = useState<GmailConnection | null>(null);
