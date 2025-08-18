@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import AuthProvider from './components/AuthProvider';
+import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
 import InboxPage from './pages/InboxPage';
@@ -11,7 +12,7 @@ import AdminPage from './pages/AdminPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 
 const AppContent: React.FC = () => {
-  const { auth } = useAuth();
+  const { auth, showLogin } = useAuth();
   const [currentPage, setCurrentPage] = useState('inbox');
 
   if (auth.isLoading) {
@@ -26,7 +27,7 @@ const AppContent: React.FC = () => {
   }
 
   if (!auth.isAuthenticated) {
-    return <LoginPage />;
+    return showLogin ? <LoginPage /> : <RegisterPage />;
   }
 
   const renderPage = () => {

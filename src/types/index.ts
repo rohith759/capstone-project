@@ -132,6 +132,15 @@ export interface AuthState {
   error: string | null;
 }
 
+export interface RegistrationData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+  organization?: string;
+  acceptTerms: boolean;
+}
+
 export interface RealTimeEmail {
   id: string;
   messageId: string;
@@ -157,4 +166,47 @@ export interface ContentFilter {
   description: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface GmailConnection {
+  id: string;
+  userId: string;
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+  isConnected: boolean;
+  lastSync: string;
+  totalEmails: number;
+  blockedEmails: number;
+  quarantinedEmails: number;
+}
+
+export interface EmailThreat {
+  id: string;
+  messageId: string;
+  fromAddress: string;
+  subject: string;
+  threatType: 'phishing' | 'spam' | 'malware' | 'duplicate' | 'fake';
+  riskScore: number;
+  detectedAt: string;
+  blocked: boolean;
+  reason: string;
+}
+
+export interface SafetyCheck {
+  id: string;
+  messageId: string;
+  fromAddress: string;
+  subject: string;
+  safetyScore: number;
+  checks: {
+    spf: boolean;
+    dkim: boolean;
+    dmarc: boolean;
+    reputation: boolean;
+    content: boolean;
+    attachments: boolean;
+  };
+  recommendation: 'allow' | 'quarantine' | 'block';
+  timestamp: string;
 }

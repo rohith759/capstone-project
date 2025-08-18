@@ -1,9 +1,10 @@
 import { useState, useEffect, createContext, useContext } from 'react';
-import { AuthUser, AuthState, LoginCredentials } from '../types';
+import { AuthUser, AuthState, LoginCredentials, RegistrationData } from '../types';
 
 const AuthContext = createContext<{
   auth: AuthState;
   login: (credentials: LoginCredentials) => Promise<void>;
+  register: (data: RegistrationData) => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<AuthUser>) => void;
 } | null>(null);
@@ -23,6 +24,7 @@ export const useAuthProvider = () => {
     isLoading: true,
     error: null
   });
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     // Check for existing session
@@ -127,6 +129,28 @@ export const useAuthProvider = () => {
     }
   };
 
+  const register = async (data: RegistrationData) => {
+    setAuth(prev => ({ ...prev, isLoading: true, error: null }));
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simulate successful registration
+      setAuth(prev => ({ ...prev, isLoading: false }));
+      setShowLogin(true); // Show login page after successful registration
+      
+      // In a real app, you might send a verification email here
+      alert('Registration successful! Please log in with your credentials.');
+      
+    } catch (error) {
+      setAuth(prev => ({
+        ...prev,
+        isLoading: false,
+        error: 'Registration failed. Please try again.'
+      }));
+    }
+  };
   const logout = () => {
     localStorage.removeItem('auth_token');
     setAuth({
@@ -147,8 +171,11 @@ export const useAuthProvider = () => {
   return {
     auth,
     login,
+    register,
     logout,
-    updateUser
+    updateUser,
+    showLogin,
+    setShowLogin
   };
 };
 

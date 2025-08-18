@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import RealTimeEmailFeed from '../components/RealTimeEmailFeed';
+import GmailIntegration from '../components/GmailIntegration';
 import { Message, FilterState } from '../types';
 import { mockMessages } from '../data/mockData';
 import MessageList from '../components/MessageList';
@@ -180,6 +181,9 @@ const InboxPage: React.FC = () => {
                 )}
               </div>
             )}
+            
+            {/* Gmail Integration */}
+            <GmailIntegration />
           </div>
 
           {/* Messages */}

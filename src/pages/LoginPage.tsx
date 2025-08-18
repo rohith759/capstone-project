@@ -4,7 +4,7 @@ import { LoginCredentials } from '../types';
 import { Shield, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
-  const { login, auth } = useAuth();
+  const { login, auth, setShowLogin } = useAuth();
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: '',
@@ -98,12 +98,12 @@ const LoginPage: React.FC = () => {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
+              Need to create an account?{' '}
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                onClick={() => setShowLogin(false)}
               >
-                Forgot password?
+                Register here
               </button>
             </div>
 
